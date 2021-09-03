@@ -1,23 +1,29 @@
-import { Body, Controller, Delete, Get, Param, Post, Query } from '@nestjs/common';
+import {
+    Body,
+    Controller,
+    Delete,
+    Get,
+    Param,
+    ParseIntPipe,
+    Patch,
+    Post,
+    Query,
+} from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { CreateTaskDto } from '../dto/create-task.dto';
-import { TasksSearchDto } from '../dto/tasks-search.dto';
+import { Task } from './tasks.entity';
 
 @Controller('tasks')
 export class TasksController {
     constructor(private taskService: TasksService) {}
 
     @Get()
-    searchTasks(@Query() tasksSearchDto: TasksSearchDto) {
-        if (Object.keys(tasksSearchDto).length) {
-            return this.taskService.searchTasks(tasksSearchDto);
-        } else {
-            return this.taskService.getAllTasks();
-        }
+    getTasks(@Query('name') name: string) {
+        return this.taskService.getTasks(name);
     }
 
     @Get('/:id')
-    getTask(@Param('id') id: string) {
+    getTask(@Param('id') id: number): Promise<Task> {
         return this.taskService.getTask(id);
     }
 
@@ -27,7 +33,15 @@ export class TasksController {
     }
 
     @Delete('/:id')
-    deleteTask(@Param('id') id: string): void {
-        this.taskService.deleteTask(id);
+    deleteTask(@Param('id', ParseIntPipe) id: number): Promise<void> {
+        return this.taskService.deleteTask(id);
+    }
+
+    @Patch(':id')
+    async updateTask(
+        @Param('id', ParseIntPipe) id: number,
+        @Body('name') name: string,
+    ): Promise<Task> {
+        return this.taskService.updateTask(id, name);
     }
 }

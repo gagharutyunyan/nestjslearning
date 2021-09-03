@@ -1,38 +1,40 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateTaskDto } from '../dto/create-task.dto';
-import { Task, TaskStatus } from './task.module';
-import { v4 as uuid } from 'uuid';
-import { TasksSearchDto } from '../dto/tasks-search.dto';
+import { Task } from './tasks.entity';
+import { TaskRepository } from './tasks.repository';
 
 @Injectable()
 export class TasksService {
-    private tasks = [];
+    constructor(private readonly taskRepository: TaskRepository) {}
 
-    getAllTasks(): Task[] {
-        return this.tasks;
+    async getTasks(name: string) {
+        return await this.taskRepository.getTasks(name);
     }
 
-    getTask(id: string): Task {
-        return this.tasks.find((el) => el.id === id);
+    async getTask(id: number): Promise<Task> {
+        const found = await this.taskRepository.findOne(id);
+
+        if (!found) {
+            throw new NotFoundException(`not found ${id}`);
+        }
+
+        return found;
     }
 
-    createTask(createTaskDto: CreateTaskDto): Task {
-        const { title, description } = createTaskDto;
-        const task: Task = {
-            id: uuid(),
-            title,
-            description,
-            status: TaskStatus.OPEN,
-        };
-        this.tasks.push(task);
+    async createTask(createTaskDto: CreateTaskDto): Promise<Task> {
+        return this.taskRepository.createTask(createTaskDto);
+    }
+
+    async updateTask(id: number, name: string): Promise<Task> {
+        const task = await this.getTask(id);
+        task.name = name;
+        await task.save();
         return task;
     }
 
-    deleteTask(id): void {
-        this.tasks = this.tasks.filter((el) => el.id !== id);
-    }
-
-    searchTasks({ title, description }: TasksSearchDto): Task[] {
-        return this.tasks.filter((el) => el.title.includes(title) || el.description.includes(description));
+    async deleteTask(id): Promise<void> {
+        const res = await this.taskRepository.delete(id);
+        if (res.affected === 0) throw new NotFoundException('Не найдено');
+        console.log(res);
     }
 }
