@@ -1,14 +1,14 @@
 import { IsNotEmpty, IsOptional } from 'class-validator';
 import { ToBoolean } from './transformers';
 
-export class CreateTaskDto {
+export class UpdateTaskDto {
     @IsNotEmpty()
     readonly name: string;
 
-    @IsNotEmpty()
+    @IsNotEmpty({ message: 'Գույնը պարտադիր է' })
     readonly color: string;
 
     @IsOptional()
     @ToBoolean()
-    readonly isChecked: boolean = false;
+    readonly isChecked: boolean;
 }

@@ -12,6 +12,7 @@ import {
 import { TasksService } from './tasks.service';
 import { CreateTaskDto } from '../dto/create-task.dto';
 import { Task } from './tasks.entity';
+import { UpdateTaskDto } from '../dto/update-task.dto';
 
 @Controller('tasks')
 export class TasksController {
@@ -40,8 +41,8 @@ export class TasksController {
     @Patch(':id')
     async updateTask(
         @Param('id', ParseIntPipe) id: number,
-        @Body('name') name: string,
+        @Body() updateTask: UpdateTaskDto,
     ): Promise<Task> {
-        return this.taskService.updateTask(id, name);
+        return this.taskService.updateTask(id, updateTask);
     }
 }

@@ -8,6 +8,9 @@ export class Task extends BaseEntity {
     @Column()
     name: string;
 
-    @Column({ default: '' })
+    @Column('')
     color: string;
+
+    @Column()
+    isChecked: boolean;
 }

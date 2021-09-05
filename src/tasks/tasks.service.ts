@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateTaskDto } from '../dto/create-task.dto';
 import { Task } from './tasks.entity';
 import { TaskRepository } from './tasks.repository';
+import { UpdateTaskDto } from '../dto/update-task.dto';
 
 @Injectable()
 export class TasksService {
@@ -25,9 +26,10 @@ export class TasksService {
         return this.taskRepository.createTask(createTaskDto);
     }
 
-    async updateTask(id: number, name: string): Promise<Task> {
+    async updateTask(id: number, updateTask: UpdateTaskDto): Promise<Task> {
+        console.log(updateTask);
         const task = await this.getTask(id);
-        task.name = name;
+        Object.assign(task, updateTask);
         await task.save();
         return task;
     }
@@ -35,6 +37,5 @@ export class TasksService {
     async deleteTask(id): Promise<void> {
         const res = await this.taskRepository.delete(id);
         if (res.affected === 0) throw new NotFoundException('Не найдено');
-        console.log(res);
     }
 }
