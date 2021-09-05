@@ -7,4 +7,7 @@ export class Task extends BaseEntity {
 
     @Column()
     name: string;
+
+    @Column({ default: '' })
+    color: string;
 }
