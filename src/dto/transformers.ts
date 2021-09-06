@@ -1,6 +1,6 @@
 import { Transform } from 'class-transformer';
 
-export const ToBoolean = () => {
+export const ToBoolean = (mode?) => {
     return Transform(({ value }) => {
         if (typeof value === 'boolean') {
             return value;
@@ -11,6 +11,6 @@ export const ToBoolean = () => {
         if (['false', 'off', 'no', '0'].includes(value.toLowerCase())) {
             return false;
         }
-        return undefined;
+        return mode === 'create' ? false : undefined;
     });
 };

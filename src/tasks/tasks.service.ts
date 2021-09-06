@@ -27,7 +27,6 @@ export class TasksService {
     }
 
     async updateTask(id: number, updateTask: UpdateTaskDto): Promise<Task> {
-        console.log(updateTask);
         const task = await this.getTask(id);
         Object.assign(task, updateTask);
         await task.save();

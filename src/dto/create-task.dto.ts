@@ -9,6 +9,6 @@ export class CreateTaskDto {
     readonly color: string;
 
     @IsOptional()
-    @ToBoolean()
-    readonly isChecked: boolean = false;
+    @ToBoolean('create')
+    readonly isChecked: boolean;
 }
