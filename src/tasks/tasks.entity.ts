@@ -11,6 +11,6 @@ export class Task extends BaseEntity {
     @Column('')
     color: string;
 
-    @Column()
+    @Column({ nullable: true })
     isChecked: boolean;
 }
