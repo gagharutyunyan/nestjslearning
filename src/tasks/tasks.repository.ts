@@ -1,6 +1,6 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { Task } from './tasks.entity';
-import { CreateTaskDto } from '../dto/create-task.dto';
+import { CreateTaskDto } from './dto/create-task.dto';
 
 @EntityRepository(Task)
 export class TaskRepository extends Repository<Task> {

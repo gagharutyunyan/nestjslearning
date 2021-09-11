@@ -1,6 +1,7 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { UserEntity } from './user.entity';
 import { AuthDto } from './dto/auth.dto';
+import { SignInDto } from './dto/signIn.dto';
 
 @EntityRepository(UserEntity)
 export class UserRepository extends Repository<UserEntity> {
@@ -8,5 +9,13 @@ export class UserRepository extends Repository<UserEntity> {
         const user = new UserEntity();
         Object.assign(user, authDto);
         return await user.save();
+    }
+
+    async login(signInDto: SignInDto): Promise<UserEntity> {
+        const { username, email } = signInDto;
+        const query = this.createQueryBuilder('user');
+        const getUser = query.where('username = :username OR email = :email', { username, email });
+
+        return await getUser.getOne();
     }
 }
