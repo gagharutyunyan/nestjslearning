@@ -38,7 +38,7 @@ export class AuthService {
         }
     }
 
-    generateJWR(user: UserEntity): string {
+    generateJWT(user: UserEntity): string {
         const { id, username } = user;
         return sign({ id, username }, '23');
     }
@@ -47,7 +47,7 @@ export class AuthService {
         return {
             user: {
                 ...user,
-                token: this.generateJWR(user),
+                token: this.generateJWT(user),
             },
         };
     }
