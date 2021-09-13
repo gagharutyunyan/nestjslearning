@@ -11,7 +11,7 @@ export class UserRepository extends Repository<UserEntity> {
         return await user.save();
     }
 
-    async login(signInDto: SignInDto): Promise<UserEntity> {
+    async getUser(signInDto: SignInDto): Promise<UserEntity> {
         const { username, email } = signInDto;
         const query = this.createQueryBuilder('user');
         const getUser = query.where('username = :username OR email = :email', { username, email });

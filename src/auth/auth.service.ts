@@ -8,17 +8,15 @@ import { UserRepository } from './user.repository';
 import { AuthDto } from './dto/auth.dto';
 import { UserEntity } from './user.entity';
 import { compare } from 'bcrypt';
-import { sign } from 'jsonwebtoken';
-import { UserResponseInterface } from './types/userResponse.interface';
 import { SignInDto } from './dto/signIn.dto';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
-    constructor(private userRepository: UserRepository) {}
-    async signUp(authDto: AuthDto): Promise<UserResponseInterface> {
+    constructor(private userRepository: UserRepository, private jwtService: JwtService) {}
+    async signUp(authDto: AuthDto): Promise<UserEntity> {
         try {
-            const user = await this.userRepository.signUp(authDto);
-            return this.buildUserResponse(user);
+            return await this.userRepository.signUp(authDto);
         } catch (e) {
             if (e.code === '23505') {
                 throw new ConflictException(e.detail);
@@ -28,11 +26,11 @@ export class AuthService {
         }
     }
 
-    async signIn(signInDto: SignInDto): Promise<string> {
+    async signIn(signInDto: SignInDto): Promise<{ accessToken: string }> {
         const { password } = signInDto;
-        const user = await this.userRepository.login(signInDto);
+        const user = await this.userRepository.getUser(signInDto);
         if (user && (await compare(password, user.password))) {
-            return user.username;
+            return { accessToken: this.generateJWT(user) };
         } else {
             throw new UnauthorizedException();
         }
@@ -40,15 +38,6 @@ export class AuthService {
 
     generateJWT(user: UserEntity): string {
         const { id, username } = user;
-        return sign({ id, username }, '23');
-    }
-
-    buildUserResponse(user: UserEntity): UserResponseInterface {
-        return {
-            user: {
-                ...user,
-                token: this.generateJWT(user),
-            },
-        };
+        return this.jwtService.sign({ id, username });
     }
 }
