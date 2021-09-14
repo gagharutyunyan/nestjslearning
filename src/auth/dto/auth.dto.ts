@@ -10,10 +10,10 @@ export class AuthDto {
     readonly email: string;
 
     @IsString()
-    @MinLength(8)
+    @MinLength(2)
     @MaxLength(30)
-    @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {
-        message: 'password is too week',
-    })
+    // @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {
+    //     message: 'password is too week',
+    // })
     readonly password: string;
 }

@@ -3,18 +3,19 @@ import { CreateTaskDto } from './dto/create-task.dto';
 import { Task } from './tasks.entity';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { TaskRepository } from './tasks.repository';
+import { UserEntity } from '../auth/user.entity';
 
 @Injectable()
 export class TasksService {
     constructor(private readonly taskRepository: TaskRepository) {}
 
-    async getTasks(name: string) {
-        return await this.taskRepository.getTasks(name);
+    async getTasks(name: string, user: UserEntity) {
+        return await this.taskRepository.getTasks(name, user);
     }
 
     async getTask(id: number): Promise<Task> {
         const found = await this.taskRepository.findOne(id);
-
+        console.log(found);
         if (!found) {
             throw new NotFoundException(`not found ${id}`);
         }
@@ -22,8 +23,8 @@ export class TasksService {
         return found;
     }
 
-    async createTask(createTaskDto: CreateTaskDto): Promise<Task> {
-        return this.taskRepository.createTask(createTaskDto);
+    async createTask(createTaskDto: CreateTaskDto, user: UserEntity): Promise<Task> {
+        return this.taskRepository.createTask(createTaskDto, user);
     }
 
     async updateTask(id: number, updateTask: UpdateTaskDto): Promise<Task> {

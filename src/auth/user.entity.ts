@@ -1,5 +1,13 @@
-import { BaseEntity, BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+    BaseEntity,
+    BeforeInsert,
+    Column,
+    Entity,
+    OneToMany,
+    PrimaryGeneratedColumn,
+} from 'typeorm';
 import { hash } from 'bcrypt';
+import { Task } from '../tasks/tasks.entity';
 
 @Entity('user')
 export class UserEntity extends BaseEntity {
@@ -14,6 +22,9 @@ export class UserEntity extends BaseEntity {
 
     @Column()
     password: string;
+
+    @OneToMany(() => Task, (task) => task.user, { eager: true })
+    tasks: Task;
 
     @BeforeInsert()
     async hashPassword() {

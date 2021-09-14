@@ -1,14 +1,8 @@
-import { IsNotEmpty, IsOptional } from 'class-validator';
-import { ToBoolean } from './transformers';
+import { IsOptional } from 'class-validator';
+import { PartialType } from '@nestjs/mapped-types';
+import { CreateTaskDto } from './create-task.dto';
 
-export class UpdateTaskDto {
-    @IsNotEmpty()
-    readonly name: string;
-
-    @IsNotEmpty({ message: 'Գույնը պարտադիր է' })
-    readonly color: string;
-
+export class UpdateTaskDto extends PartialType(CreateTaskDto) {
     @IsOptional()
-    @ToBoolean()
-    readonly isChecked: boolean;
+    readonly color: string;
 }

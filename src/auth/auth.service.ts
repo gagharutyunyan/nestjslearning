@@ -14,9 +14,10 @@ import { JwtService } from '@nestjs/jwt';
 @Injectable()
 export class AuthService {
     constructor(private userRepository: UserRepository, private jwtService: JwtService) {}
-    async signUp(authDto: AuthDto): Promise<UserEntity> {
+    async signUp(authDto: AuthDto): Promise<{ accessToken: string }> {
         try {
-            return await this.userRepository.signUp(authDto);
+            const user = await this.userRepository.signUp(authDto);
+            return { accessToken: this.generateJWT(user) };
         } catch (e) {
             if (e.code === '23505') {
                 throw new ConflictException(e.detail);
@@ -34,6 +35,10 @@ export class AuthService {
         } else {
             throw new UnauthorizedException();
         }
+    }
+
+    async getUsers(): Promise<UserEntity[]> {
+        return await this.userRepository.find();
     }
 
     generateJWT(user: UserEntity): string {
