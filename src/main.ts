@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { BadRequestException, ValidationPipe } from '@nestjs/common';
+import * as config from 'config';
 
 (async () => {
     const app = await NestFactory.create(AppModule);
@@ -19,5 +20,6 @@ import { BadRequestException, ValidationPipe } from '@nestjs/common';
                 }),
         }),
     );
-    await app.listen(5000);
+    const serverConfig = config.get('server');
+    await app.listen(serverConfig.port);
 })();
