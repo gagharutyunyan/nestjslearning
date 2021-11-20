@@ -40,6 +40,9 @@ export class AuthService {
     async getUsers(): Promise<UserEntity[]> {
         return await this.userRepository.find();
     }
+    async getUser(id: number): Promise<UserEntity> {
+        return await this.userRepository.findOne({ id });
+    }
 
     generateJWT(user: UserEntity): string {
         const { id, username } = user;

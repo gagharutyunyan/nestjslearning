@@ -8,7 +8,6 @@ import * as config from 'config';
     app.useGlobalPipes(
         new ValidationPipe({
             whitelist: true,
-            transform: true,
             exceptionFactory: (errors) =>
                 new BadRequestException({
                     statusCode: 400,

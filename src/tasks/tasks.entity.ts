@@ -1,4 +1,12 @@
-import { BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+    BaseEntity,
+    Column,
+    Entity,
+    Index,
+    ManyToOne,
+    OneToMany,
+    PrimaryGeneratedColumn,
+} from 'typeorm';
 import { UserEntity } from '../auth/user.entity';
 
 @Entity()
@@ -16,6 +24,5 @@ export class Task extends BaseEntity {
     isChecked: boolean;
 
     @ManyToOne(() => UserEntity, (user) => user.tasks, { eager: false })
-    @Column()
-    user: number;
+    user: UserEntity;
 }
